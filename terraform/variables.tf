@@ -75,3 +75,39 @@ variable "extra_environment" {
   type        = map(string)
   default     = {}
 }
+
+variable "chat_container_image" {
+  description = "Docker image for the chat-service (e.g., account.dkr.ecr.us-east-1.amazonaws.com/chat-service:latest)."
+  type        = string
+}
+
+variable "chat_container_port" {
+  description = "Container port exposed by chat-service."
+  type        = number
+  default     = 8081
+}
+
+variable "chat_db_name" {
+  description = "Database name for chat-service."
+  type        = string
+  default     = "chatdb"
+}
+
+variable "chat_db_username" {
+  description = "Database username for chat-service."
+  type        = string
+  default     = "postgres"
+}
+
+variable "chat_db_password" {
+  description = "Database password for chat-service."
+  type        = string
+  sensitive   = true
+  default     = "postgres"
+}
+
+variable "chat_jwt_issuer_uri" {
+  description = "JWT issuer URI for chat-service."
+  type        = string
+  default     = "https://cognito-idp.us-east-1.amazonaws.com/your-user-pool-id"
+}

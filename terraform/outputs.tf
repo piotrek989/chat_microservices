@@ -17,3 +17,8 @@ output "alb_url" {
   description = "ALB URL for the auth-service."
   value       = aws_lb.auth.dns_name
 }
+
+output "chat_alb_url" {
+  description = "ALB URL for the chat-service."
+  value       = aws_lb.chat.dns_name
+}

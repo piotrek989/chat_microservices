@@ -5,7 +5,6 @@ resource "aws_cognito_user_pool" "auth" {
   # Cognito user pool for email-based authentication.
   name = "${var.project_name}-auth-user-pool"
 
-  username_attributes       = ["email"]
   auto_verified_attributes  = ["email"]
 
   password_policy {
@@ -103,7 +102,8 @@ resource "aws_security_group" "alb" {
   }
 }
 
-resource "aws_security_group" "ecs" {
+resource "aws_security_group" "ecs" {#wirtualne firewalle kontrolujace ruch sieciowy
+ # do i z zasobów ECS, zapewniając bezpieczną komunikację między ALB a zadaniami ECS.
   name        = "${var.project_name}-ecs-sg"
   description = "ECS service security group"
   vpc_id      = aws_vpc.main.id
@@ -241,7 +241,7 @@ resource "aws_ecs_service" "auth" {
 
   network_configuration {
     subnets          = aws_subnet.public[*].id
-    security_groups  = [aws_security_group.ecs.id]
+    security_groups  = [aws_security_group.ecs.id]#kontrola ruchu
     assign_public_ip = true
   }
 
@@ -251,7 +251,9 @@ resource "aws_ecs_service" "auth" {
     container_port   = var.container_port
   }
 
-  depends_on = [aws_lb_listener.http]
+  depends_on = [aws_lb_listener.http]#najpierw twrzony load balancer a potem serwis, bo
+  # serwis musi wiedzieć do jakiego target group ma się podłączyć, a ten jest tworzony 
+  #przez listenera
 }
 
 resource "aws_appautoscaling_target" "ecs" {
@@ -264,9 +266,11 @@ resource "aws_appautoscaling_target" "ecs" {
 }
 
 resource "aws_appautoscaling_policy" "ecs_cpu" {
-  # Autoscaling policy based on average CPU utilization.
+  #automatyczne skalowanie usługi ECS. Jego zadaniem jest utrzymywanie
+  # obciążenia procesora (CPU) na stałym, określonym poziomie poprzez 
+  #dodawanie lub usuwanie kontenerów.
   name               = "${var.project_name}-auth-cpu-scaling"
-  policy_type        = "TargetTrackingScaling"
+  policy_type        = "TargetTrackingScaling"#aws sam ogarnia avg usage i dostosowuje ilość zadań
   resource_id        = aws_appautoscaling_target.ecs.resource_id
   scalable_dimension = aws_appautoscaling_target.ecs.scalable_dimension
   service_namespace  = aws_appautoscaling_target.ecs.service_namespace

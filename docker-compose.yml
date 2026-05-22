@@ -1,0 +1,26 @@
+services:
+  db:
+    image: postgres:16
+    container_name: chat-db
+    restart: always
+    environment:
+      POSTGRES_DB: chatdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5433:5432"
+  # HOST(wejscie od strony mojego komputera) / KONTENER(Postgres na tym porcie słucha), 
+    
+  auth-service:
+    build: ./services/auth-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+  chat-service:
+    build: ./services/chat-service
+    ports:
+      - "8081:8081"
+    depends_on:
+      - db
