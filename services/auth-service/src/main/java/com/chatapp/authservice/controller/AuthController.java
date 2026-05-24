@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -39,5 +40,10 @@ public class AuthController {
             accessToken = authorizationHeader.substring("Bearer ".length());
         }
         return ResponseEntity.ok(authService.getCurrentUser(accessToken));
+    }
+
+    @GetMapping("/resolve")
+    public ResponseEntity<UserResponseDto> resolveByUsername(@RequestParam("username") String username) {
+        return ResponseEntity.ok(authService.resolveByUsername(username));
     }
 }

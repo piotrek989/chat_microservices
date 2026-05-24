@@ -50,7 +50,8 @@ public class ChatController {
         @Valid @RequestBody SendMessageRequest request
     ) {
         String userId = currentUserService.getCurrentUserId();
-        MessageDto message = chatService.sendMessage(chatId, userId, request);
+        String username = currentUserService.getCurrentUsername();
+        MessageDto message = chatService.sendMessage(chatId, userId, username, request);
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(new SendMessageResponse(message.getMessageId(), message.getCreatedAt()));
     }

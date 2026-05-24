@@ -16,4 +16,22 @@ public class CurrentUserService {
         }
         return jwt.getSubject();
     }
+
+    public String getCurrentUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof Jwt jwt)) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Missing authentication");
+        }
+        String username = jwt.getClaimAsString("cognito:username");
+        if (username == null || username.isBlank()) {
+            username = jwt.getClaimAsString("username");
+        }
+        if (username == null || username.isBlank()) {
+            username = jwt.getClaimAsString("preferred_username");
+        }
+        if (username == null || username.isBlank()) {
+            username = jwt.getSubject();
+        }
+        return username;
+    }
 }

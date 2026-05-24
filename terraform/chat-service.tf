@@ -137,6 +137,14 @@ resource "aws_cloudwatch_log_group" "chat" {
 locals {
   chat_environment = [
     {
+      name  = "AWS_REGION"
+      value = var.aws_region
+    },
+    {
+      name  = "AWS_SNS_TOPIC_ARN"
+      value = aws_sns_topic.notifications.arn
+    },
+    {
       name  = "SPRING_DATASOURCE_URL"
       value = "jdbc:postgresql://${aws_db_instance.chat.address}:${aws_db_instance.chat.port}/${var.chat_db_name}" #adres RDS
     },
@@ -158,7 +166,7 @@ locals {
     },
     {
       name  = "SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI"
-      value = var.chat_jwt_issuer_uri #issuer dla JWT
+      value = "https://cognito-idp.${var.aws_region}.amazonaws.com/${aws_cognito_user_pool.auth.id}" #issuer dla JWT
     }
   ]
 }

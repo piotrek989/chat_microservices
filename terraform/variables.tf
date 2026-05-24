@@ -111,3 +111,68 @@ variable "chat_jwt_issuer_uri" {
   type        = string
   default     = "https://cognito-idp.us-east-1.amazonaws.com/your-user-pool-id"
 }
+
+variable "file_container_image" {
+  description = "Docker image for the file-service (e.g., account.dkr.ecr.us-east-1.amazonaws.com/file-service:latest)."
+  type        = string
+}
+
+variable "file_container_port" {
+  description = "Container port exposed by file-service."
+  type        = number
+  default     = 8082
+}
+
+variable "file_bucket_name" {
+  description = "S3 bucket name used by file-service."
+  type        = string
+  default     = "chatapp-file-bucket"
+}
+
+variable "file_table_name" {
+  description = "DynamoDB table name used by file-service."
+  type        = string
+  default     = "chatapp-file-metadata"
+}
+
+variable "file_jwt_issuer_uri" {
+  description = "JWT issuer URI for file-service."
+  type        = string
+  default     = "https://cognito-idp.us-east-1.amazonaws.com/your-user-pool-id"
+}
+
+variable "notification_container_image" {
+  description = "Docker image for the notification-service (e.g., account.dkr.ecr.us-east-1.amazonaws.com/notification-service:latest)."
+  type        = string
+}
+
+variable "notification_container_port" {
+  description = "Container port exposed by notification-service."
+  type        = number
+  default     = 8083
+}
+
+variable "notification_db_name" {
+  description = "Database name for notification-service."
+  type        = string
+  default     = "notificationdb"
+}
+
+variable "notification_db_username" {
+  description = "Database username for notification-service."
+  type        = string
+  default     = "postgres"
+}
+
+variable "notification_db_password" {
+  description = "Database password for notification-service."
+  type        = string
+  sensitive   = true
+  default     = "postgres"
+}
+
+variable "notification_jwt_issuer_uri" {
+  description = "JWT issuer URI for notification-service."
+  type        = string
+  default     = "https://cognito-idp.us-east-1.amazonaws.com/your-user-pool-id"
+}

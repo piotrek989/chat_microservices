@@ -26,4 +26,8 @@ public class AuthService {
     public UserResponseDto getCurrentUser(String accessToken) {
         return cognitoClient.getUserByAccessToken(accessToken);
     }
+
+    public UserResponseDto resolveByUsername(String username) {
+        return cognitoClient.getUserByUsername(username);
+    }
 }

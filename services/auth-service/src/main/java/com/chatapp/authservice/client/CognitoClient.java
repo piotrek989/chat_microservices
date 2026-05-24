@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.cognitoidentityprovider.CognitoIdentityProviderClient;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AttributeType;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserRequest;
+import software.amazon.awssdk.services.cognitoidentityprovider.model.AdminGetUserResponse;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AuthFlowType;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.AuthenticationResultType;
 import software.amazon.awssdk.services.cognitoidentityprovider.model.GetUserRequest;
@@ -64,6 +66,19 @@ public class CognitoClient {
                 .build());
         Map<String, String> attributes = response.userAttributes().stream()
                 .collect(Collectors.toMap(AttributeType::name, AttributeType::value, (first, second) -> second));
+        String email = attributes.get("email");
+        String userId = attributes.getOrDefault("sub", response.username());
+        return new UserResponseDto(userId, response.username(), email);
+    }
+
+    public UserResponseDto getUserByUsername(String username) {
+        AdminGetUserResponse response = identityProviderClient.adminGetUser(AdminGetUserRequest.builder()
+            .userPoolId(cognitoConfig.getUserPoolId())
+            .username(username)
+            .build());
+
+        Map<String, String> attributes = response.userAttributes().stream()
+            .collect(Collectors.toMap(AttributeType::name, AttributeType::value, (first, second) -> second));
         String email = attributes.get("email");
         String userId = attributes.getOrDefault("sub", response.username());
         return new UserResponseDto(userId, response.username(), email);

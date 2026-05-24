@@ -10,6 +10,8 @@ import com.chatapp.chatservice.entity.Message;
 import com.chatapp.chatservice.repository.ChatParticipantRepository;
 import com.chatapp.chatservice.repository.ChatRepository;
 import com.chatapp.chatservice.repository.MessageRepository;
+import com.chatapp.chatservice.sns.MessageNotificationData;
+import com.chatapp.chatservice.sns.NotificationType;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,13 +26,16 @@ public class ChatService {
     private final ChatRepository chatRepository;
     private final ChatParticipantRepository chatParticipantRepository;
     private final MessageRepository messageRepository;
+    private final SnsPublisherService snsPublisherService;
 
     public ChatService(ChatRepository chatRepository,
                        ChatParticipantRepository chatParticipantRepository,
-                       MessageRepository messageRepository) {
+                       MessageRepository messageRepository,
+                       SnsPublisherService snsPublisherService) {
         this.chatRepository = chatRepository;
         this.chatParticipantRepository = chatParticipantRepository;
         this.messageRepository = messageRepository;
+        this.snsPublisherService = snsPublisherService;
     }
 
     public UUID createChat(String userId, CreateChatRequest request) {
@@ -70,17 +75,25 @@ public class ChatService {
         return result;
     }
 
-    public MessageDto sendMessage(UUID chatId, String userId, SendMessageRequest request) {
+    public MessageDto sendMessage(UUID chatId, String userId, String username, SendMessageRequest request) {
         Chat chat = getChatOrThrow(chatId);
         ensureParticipant(chatId, userId);
 
-        Message message = new Message(UUID.randomUUID(), chat, userId, request.getContent());
+        Message message = new Message(UUID.randomUUID(), chat, userId, username, request.getContent());
         Message savedMessage = messageRepository.save(message);
+
+        MessageNotificationData data = new MessageNotificationData(
+            userId,
+            chatId.toString(),
+            savedMessage.getId().toString()
+        );
+        snsPublisherService.publishEvent(NotificationType.MESSAGE, data);
 
         return new MessageDto(
             savedMessage.getId(),
             chatId,
             savedMessage.getSenderId(),
+            savedMessage.getSenderUsername(),
             savedMessage.getContent(),
             savedMessage.getCreatedAt()
         );
@@ -97,12 +110,21 @@ public class ChatService {
                 message.getId(),
                 chatId,
                 message.getSenderId(),
+                message.getSenderUsername(),
                 message.getContent(),
                 message.getCreatedAt()
             ));
         }
 
         return result;
+    }
+
+    public List<String> getParticipantIds(UUID chatId) {
+        getChatOrThrow(chatId);
+        return chatParticipantRepository.findByIdChatId(chatId)
+            .stream()
+            .map(participant -> participant.getUserId())
+            .toList();
     }
 
     private Chat getChatOrThrow(UUID chatId) {

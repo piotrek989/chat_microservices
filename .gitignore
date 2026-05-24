@@ -113,3 +113,5 @@ coverage-final.json
 *.iws
 
 # Keep the maven wrapper jar committed, don't ignore ".mvn/wrapper/maven-wrapper.jar"
+
+/localstack-data

@@ -25,6 +25,9 @@ public class Message {
     @Column(name = "sender_id", nullable = false)
     private String senderId;
 
+    @Column(name = "sender_username")
+    private String senderUsername;
+
     @Column(name = "content", nullable = false)
     private String content;
 
@@ -34,10 +37,11 @@ public class Message {
     public Message() {
     }
 
-    public Message(UUID id, Chat chat, String senderId, String content) {
+    public Message(UUID id, Chat chat, String senderId, String senderUsername, String content) {
         this.id = id;
         this.chat = chat;
         this.senderId = senderId;
+        this.senderUsername = senderUsername;
         this.content = content;
     }
 
@@ -58,6 +62,10 @@ public class Message {
 
     public String getSenderId() {
         return senderId;
+    }
+
+    public String getSenderUsername() {
+        return senderUsername;
     }
 
     public String getContent() {
