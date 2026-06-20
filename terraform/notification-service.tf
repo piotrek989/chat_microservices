@@ -1,7 +1,7 @@
 resource "aws_sns_topic" "notifications" {
   name = "${var.project_name}-notifications"
 }
-
+#wirtualna zapora sieciowa dla zasobow
 resource "aws_security_group" "notification_alb" {
   name        = "${var.project_name}-notification-alb-sg"
   description = "Notification service ALB security group"
@@ -101,7 +101,7 @@ resource "aws_lb" "notification" {
     Name = "${var.project_name}-notification-alb"
   }
 }
-
+# mowi LB gdzie dokladnei ma wyasylac ruch i jak sprawdzac zdrowie containera
 resource "aws_lb_target_group" "notification" {
   name        = "${var.project_name}-notification-tg"
   port        = var.notification_container_port

@@ -15,13 +15,6 @@ services:
     build: ./services/auth-service
     ports:
       - "8080:8080"
-    environment:
-      AWS_REGION: us-east-1
-      AWS_ACCESS_KEY_ID: ASIARNR4RPKIAT4BX7AR
-      AWS_SECRET_ACCESS_KEY: Btjpc1hQWb1kWtlisqD1CTpS2a+zhHNqJEFzVh8h
-      AWS_SESSION_TOKEN: IQoJb3JpZ2luX2VjEHQaCXVzLXdlc3QtMiJIMEYCIQDzvRJUdTY/90benZtA5FZ7tUudHw7cdEW/YAgvfQA/bQIhAM0tk2tk63FVBcLgGN2eTZfHZ+rPfp51oCUf1bqFEDLgKqwCCD0QABoMMDk3ODM3NDgwNTkyIgzivoFgOCYxTdRpfgcqiQIqyW0YpyspVuY6kdIpLcRTk75I+PY/V122jvVWDrC2Xc+Tj1BkzXsuoH9WcekAj8lIutsMNBRIXkd2RSGR+n35oTIRjkFUrsJM0qFhNqm9BCNmQAMkegQUNbU8+3tyMbt702aLONLcni8f9vFMwBb4QGdy19Vbn+VFHxwmUKuiFSyo3I7E+8rXtTzr1iJIC/1AJNlUfO2j+enerbVazlhxpBME2naiScU/GZiA1hhLOd5qJOCGjMsta/g0NdepBpi320TraOHP90/2N3wIRI+W6ediwAqv/gYIjotgHwpmSVqShPP7oF1Uz8mkDsTeabFFJXBFS6n3jsKfa79KqgT93rlEdzHH2ns9MJeIyNAGOpwB7C7Z3rz8o/fc+uxZYXk8YvEtF91vccm8R+ij88R2HYCQhOzpxEd6CKmyYACApQSd0CU8YUuCuFbXPpGrhZES6iNNV28tg8osH08zqI6oodl26tsZd4vQJTg8G5qNMxQCQ45d6DMNvDEA7OOxesyU/h9dwtIIfn9i39BpRi0vUq/Y64Wrd0etWBKBarXataBIr+Y5Lc4vqe15zVd9
-    depends_on:
-      - db
 
   chat-service:
     build: ./services/chat-service
@@ -41,10 +34,6 @@ services:
     ports:
       - "8082:8082"
     environment:
-      AWS_REGION: us-east-1
-      AWS_ACCESS_KEY: ASIARNR4RPKIAT4BX7AR
-      AWS_SECRET_KEY: Btjpc1hQWb1kWtlisqD1CTpS2a+zhHNqJEFzVh8h
-      AWS_SESSION_TOKEN: IQoJb3JpZ2luX2VjEHQaCXVzLXdlc3QtMiJIMEYCIQDzvRJUdTY/90benZtA5FZ7tUudHw7cdEW/YAgvfQA/bQIhAM0tk2tk63FVBcLgGN2eTZfHZ+rPfp51oCUf1bqFEDLgKqwCCD0QABoMMDk3ODM3NDgwNTkyIgzivoFgOCYxTdRpfgcqiQIqyW0YpyspVuY6kdIpLcRTk75I+PY/V122jvVWDrC2Xc+Tj1BkzXsuoH9WcekAj8lIutsMNBRIXkd2RSGR+n35oTIRjkFUrsJM0qFhNqm9BCNmQAMkegQUNbU8+3tyMbt702aLONLcni8f9vFMwBb4QGdy19Vbn+VFHxwmUKuiFSyo3I7E+8rXtTzr1iJIC/1AJNlUfO2j+enerbVazlhxpBME2naiScU/GZiA1hhLOd5qJOCGjMsta/g0NdepBpi320TraOHP90/2N3wIRI+W6ediwAqv/gYIjotgHwpmSVqShPP7oF1Uz8mkDsTeabFFJXBFS6n3jsKfa79KqgT93rlEdzHH2ns9MJeIyNAGOpwB7C7Z3rz8o/fc+uxZYXk8YvEtF91vccm8R+ij88R2HYCQhOzpxEd6CKmyYACApQSd0CU8YUuCuFbXPpGrhZES6iNNV28tg8osH08zqI6oodl26tsZd4vQJTg8G5qNMxQCQ45d6DMNvDEA7OOxesyU/h9dwtIIfn9i39BpRi0vUq/Y64Wrd0etWBKBarXataBIr+Y5Lc4vqe15zVd9
       AWS_SNS_ENDPOINT: http://localstack:4566
       AWS_SNS_TOPIC_ARN: arn:aws:sns:us-east-1:000000000000:chatapp-notifications
       AWS_S3_ENDPOINT: http://localstack:4566
@@ -86,13 +75,16 @@ services:
       - "4566:4566"
     environment:
       - SERVICES=s3,dynamodb,sns
-      - LOCALSTACK_AUTH_TOKEN=ls-tAqO7488-lIMO-cOXO-yuXo-YiPaXoYedd93
-      - EXTRA_CORS_ALLOWED_ORIGINS=*
-      - EXTRA_CORS_ALLOWED_HEADERS=*
-      - ALLOW_CORS_RESOURCES=1
+      - LOCALSTACK_AUTH_TOKEN=
+      - EXTRA_CORS_ALLOWED_ORIGINS=* #pozwala na request z dowlonego źródła, przydatne podczas testowania z frontendem
+      - EXTRA_CORS_ALLOWED_HEADERS=* #Pozwala na dowolne nagłówki HTTP
+      - ALLOW_CORS_RESOURCES=1 #Włącza obsługę CORS dla zasobów LocalStack
+      - LOCALSTACK_HOST=localstack
+      - HOSTNAME_EXTERNAL=localstack
     volumes:
       - "./localstack-data:/var/lib/localstack"
-      - "./init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh"
+      - "./init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh" # to jest skrypt, który będzie uruchamiany po starcie LocalStack,
+                                                                 # służy do inicjalizacji zasobów AWS (S3, DynamoDB, SNS) potrzebnych do działania aplikacji
 
   frontend:
     build: ./frontend

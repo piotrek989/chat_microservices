@@ -28,7 +28,7 @@ variable "container_image" {
   type        = string
 }
 
-variable "container_port" {
+variable "auth_container_port" {
   description = "Container port exposed by auth-service."
   type        = number
   default     = 8080
@@ -135,11 +135,11 @@ variable "file_table_name" {
   default     = "chatapp-file-metadata"
 }
 
-variable "file_jwt_issuer_uri" {
-  description = "JWT issuer URI for file-service."
-  type        = string
-  default     = "https://cognito-idp.us-east-1.amazonaws.com/your-user-pool-id"
-}
+# variable "file_jwt_issuer_uri" {
+#   description = "JWT issuer URI for file-service."
+#   type        = string
+#   default     = "https://cognito-idp.us-east-1.amazonaws.com/your-user-pool-id"
+# }
 
 variable "notification_container_image" {
   description = "Docker image for the notification-service (e.g., account.dkr.ecr.us-east-1.amazonaws.com/notification-service:latest)."
@@ -171,8 +171,8 @@ variable "notification_db_password" {
   default     = "postgres"
 }
 
-variable "notification_jwt_issuer_uri" {
-  description = "JWT issuer URI for notification-service."
-  type        = string
-  default     = "https://cognito-idp.us-east-1.amazonaws.com/your-user-pool-id"
-}
+# variable "notification_jwt_issuer_uri" {
+#   description = "JWT issuer URI for notification-service."
+#   type        = string
+#   default     = "https://cognito-idp.us-east-1.amazonaws.com/your-user-pool-id"
+# }

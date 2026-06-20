@@ -1,3 +1,5 @@
+#front hostowany na S3 - statyczna strona, brak backendu, tylko frontendowa część aplikacji
+
 data "aws_caller_identity" "current" {}
 
 resource "aws_s3_bucket" "frontend" {

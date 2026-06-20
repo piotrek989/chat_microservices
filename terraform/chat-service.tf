@@ -38,7 +38,7 @@ resource "aws_security_group" "chat_ecs" {#firewalle kontrolujące ruch sieciowy
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]#moze łaczyc sie z kazdym IP w internecie
   }
 }
 
@@ -91,7 +91,7 @@ resource "aws_lb" "chat" {
   name               = "${var.project_name}-chat-alb" #ALB dla chat-service
   load_balancer_type = "application"
   subnets            = aws_subnet.public[*].id
-  security_groups    = [aws_security_group.chat_alb.id]
+  security_groups    = [aws_security_group.chat_alb.id]#przypisanie grupy zabezpieczen do zasobu ALB
 
   tags = {
     Name = "${var.project_name}-chat-alb"
