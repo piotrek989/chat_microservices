@@ -15,9 +15,7 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                     .allowedOrigins(
-                        "http://localhost:5173",
-                        "http://chatapp-frontend-097837480592.s3-website-us-east-1.amazonaws.com",
-                        "https://chatapp-frontend-097837480592.s3-website-us-east-1.amazonaws.com"
+                        "http://localhost:5173"
                     )
                     .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                     .allowedHeaders("Authorization", "Content-Type")

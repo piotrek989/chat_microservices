@@ -32,9 +32,7 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(List.of(
-            "http://localhost:5173",
-            "http://chatapp-frontend-097837480592.s3-website-us-east-1.amazonaws.com",
-            "https://chatapp-frontend-097837480592.s3-website-us-east-1.amazonaws.com"
+            "http://localhost:5173"
         ));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
         configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
