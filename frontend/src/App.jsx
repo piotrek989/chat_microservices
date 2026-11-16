@@ -106,7 +106,17 @@ export default function App() {
       }
     }, 10000);
 
-    return () => clearInterval(interval);
+    const refreshNotificationsWhenVisible = () => {
+      if (document.visibilityState === "visible") {
+        loadNotifications();
+      }
+    };
+    document.addEventListener("visibilitychange", refreshNotificationsWhenVisible);
+
+    return () => {
+      clearInterval(interval);
+      document.removeEventListener("visibilitychange", refreshNotificationsWhenVisible);
+    };
   }, [hasToken, selectedChatId]);
 
   const selectedChat = useMemo(

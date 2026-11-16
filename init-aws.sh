@@ -14,6 +14,18 @@ awslocal dynamodb create-table \
 # Nazwa musi być taka sama jak w Twoim application.yml / docker-compose
 awslocal sns create-topic --name chatapp-notifications
 
+# Wait until the notification endpoint is ready to confirm the SNS subscription.
+for attempt in $(seq 1 60); do
+    if curl --silent --fail --max-time 2 http://notification-service:8083/health >/dev/null; then
+        break
+    fi
+    if [ "$attempt" -eq 60 ]; then
+        echo "Notification service did not become healthy; SNS subscription was not created." >&2
+        exit 1
+    fi
+    sleep 2
+done
+
 # 4. SNS Subscription - Łączenie SNS z Twoim Notification-Service
 # WAŻNE: Używamy nazwy serwisu z docker-compose ('notification-service') jako hosta
 awslocal sns subscribe \

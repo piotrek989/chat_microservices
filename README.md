@@ -81,7 +81,7 @@ Docker with Docker Compose is required. The repository includes configuration fo
 docker compose up --build
 ```
 
-The frontend is available at `http://localhost:5173`, and the backend services use ports `8080`–`8083`. A complete local setup requires Cognito, database, JWT, and AWS/LocalStack settings, as well as the frontend API URLs (`VITE_*_API`).
+The frontend is available at `http://localhost:5173`, and the backend services use ports `8080`–`8083`. LocalStack waits for the notification service health check before creating its SNS subscription. A complete local setup requires Cognito, database, JWT, and AWS/LocalStack settings, as well as the frontend API URLs (`VITE_*_API`).
 
 ## Tests
 

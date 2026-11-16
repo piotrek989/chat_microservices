@@ -184,7 +184,7 @@ resource "aws_sns_topic_subscription" "notification" {
   protocol  = "http"
   endpoint  = "http://${aws_lb.notification.dns_name}/notifications/sns"
 
-  depends_on = [aws_lb_listener.notification_http]
+  depends_on = [aws_ecs_service.notification]
 }
 
 resource "aws_ecs_task_definition" "notification" {

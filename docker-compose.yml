@@ -85,6 +85,8 @@ services:
       - "./localstack-data:/var/lib/localstack"
       - "./init-aws.sh:/etc/localstack/init/ready.d/init-aws.sh" # to jest skrypt, który będzie uruchamiany po starcie LocalStack,
                                                                  # służy do inicjalizacji zasobów AWS (S3, DynamoDB, SNS) potrzebnych do działania aplikacji
+    depends_on:
+      - notification-service
 
   frontend:
     build: ./frontend

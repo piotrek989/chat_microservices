@@ -55,7 +55,9 @@ public class NotificationController {
         try {
             if ("SubscriptionConfirmation".equalsIgnoreCase(messageType)) {
                 SnsMessage snsMessage = objectMapper.readValue(messageBody, SnsMessage.class);
-                confirmSubscription(snsMessage.getSubscribeUrl());
+                if (!confirmSubscription(snsMessage.getSubscribeUrl())) {
+                    return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE).build();
+                }
                 return ResponseEntity.ok().build();
             }
             if ("Notification".equalsIgnoreCase(messageType)) {
@@ -90,10 +92,10 @@ public class NotificationController {
         return ResponseEntity.ok(history);
     }
 
-    private void confirmSubscription(String subscribeUrl) {
+    private boolean confirmSubscription(String subscribeUrl) {
         if (subscribeUrl == null || subscribeUrl.isBlank()) {
             logger.warn("SNS subscription confirmation missing SubscribeURL");
-            return;
+            return false;
         }
         try {
             HttpRequest request = HttpRequest.newBuilder(URI.create(subscribeUrl))
@@ -103,11 +105,12 @@ public class NotificationController {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() / 100 == 2) {
                 logger.info("SNS subscription confirmed");
-            } else {
-                logger.warn("SNS subscription confirmation failed with status {}", response.statusCode());
+                return true;
             }
+            logger.warn("SNS subscription confirmation failed with status {}", response.statusCode());
         } catch (Exception ex) {
             logger.error("Failed to confirm SNS subscription", ex);
         }
+        return false;
     }
 }
